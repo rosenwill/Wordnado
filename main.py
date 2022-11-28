@@ -1,5 +1,5 @@
 # Wordnado Current Development
-# Last Edit 11/28/2022 1:57PM
+# Last Edit 11/28/2022 2:47PM
 
 import pygame, sys, random
 from pygame.locals import *
@@ -16,13 +16,14 @@ HEIGHT = 900
 
 player = pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (96, 96))
 
-bg_img = pygame.image.load('Images/Backgrounds/newbackground.png')
+# Background image
+bg_img = pygame.image.load('Images/Backgrounds/tornado.jpg')
 fps = 60
 font = pygame.font.Font('freesansbold.ttf', 16)
 timer = pygame.time.Clock()
 
-platform = pygame.image.load('Images/Elements/platform.png')
-platform = pygame.transform.scale(platform, (120, 12))
+platform = pygame.image.load('Images/Elements/cloud2.png')
+platform = pygame.transform.scale(platform, (160, 70))
 
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
 bg_img = pygame.transform.scale(bg_img, (WIDTH, HEIGHT))
@@ -31,12 +32,12 @@ pygame.display.set_caption('Wordnado')
 # Game Variables
 player_x = 260
 player_y = 750
-platforms = [
-	[250, 850, 120, 12],
-	[410, 610, 120, 12],
-	[120, 430, 120, 12],
-	[375, 290, 120, 12],
-	[230, 90, 120, 12]
+platforms = [ # [x, y, width, height] of hitboxes
+	[250, 850, 160, 12],
+	[410, 610, 160, 12],
+	[120, 430, 160, 12],
+	[375, 290, 160, 12],
+	[230, 90, 160, 12]
 ]
 jump = False
 y_change = 0
@@ -56,6 +57,7 @@ def update_player(y_pos):
 
 	y_pos += y_change
 	y_change += gravity
+	
 	return y_pos
 
 # Check for Collisions
@@ -66,6 +68,7 @@ def check_collisions(rect_list, j):
 	for i in range(len(rect_list)):
 		if rect_list[i].colliderect([player_x + 36, player_y + 80, 40, 16]) and jump == False and y_change > 0:
 			j = True
+	
 	return j
 
 # Handle Platform Movement
@@ -78,9 +81,11 @@ def update_platforms(platform_list, pos, change):
 			platform_list[i][1] += 10
 	else:
 		pass
+
 	for item in range(len(platform_list)):
 		if platform_list[item][1] > 900:
-			platform_list[item] = [random.randint(5, 475), random.randint(-60, -40), 120, 12]
+			platform_list[item] = [random.randint(5, 475), random.randint(-60, -40), 160, 12]
+	
 	return platform_list
 
 
@@ -95,7 +100,7 @@ while running == True:
 
 	for i in range(len(platforms)):
 		block = pygame.draw.rect(screen, black, platforms[i], 0, 15)
-		screen.blit(platform, (block.x, block.y))
+		screen.blit(platform, (block.x, block.y - 35)) # Ties platform hitboxes to platform image
 		blocks.append(block)
 
 	for event in pygame.event.get():
