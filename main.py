@@ -1,5 +1,5 @@
 # Wordnado Current Development
-# Last Edit 11/27/2022
+# Last Edit 11/28/2022 1:57PM
 
 import pygame, sys, random
 from pygame.locals import *
@@ -7,7 +7,6 @@ from pygame.locals import *
 pygame.init()
 
 # Game Constants
-
 white = (255, 255, 255)
 black = (0, 0, 0)
 gray = (128, 128, 128)
@@ -15,38 +14,36 @@ gray = (128, 128, 128)
 WIDTH = 600
 HEIGHT = 900
 
-player = pygame.transform.scale(pygame.image.load('worby.png'), (96, 96))
+player = pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (96, 96))
 
-bg_img = pygame.image.load('background.png')
+bg_img = pygame.image.load('Images/Backgrounds/newbackground.png')
 fps = 60
 font = pygame.font.Font('freesansbold.ttf', 16)
 timer = pygame.time.Clock()
 
-
-platform = pygame.image.load('platform.png')
+platform = pygame.image.load('Images/Elements/platform.png')
 platform = pygame.transform.scale(platform, (120, 12))
 
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
 bg_img = pygame.transform.scale(bg_img, (WIDTH, HEIGHT))
 pygame.display.set_caption('Wordnado')
 
-# Game Variable
-
+# Game Variables
 player_x = 260
 player_y = 750
 platforms = [
-			[250, 850, 120, 12],
-			[410, 610, 120, 12],
-			[120, 430, 120, 12],
-			[375, 290, 120, 12],
-			[230, 90, 120, 12]]
+	[250, 850, 120, 12],
+	[410, 610, 120, 12],
+	[120, 430, 120, 12],
+	[375, 290, 120, 12],
+	[230, 90, 120, 12]
+]
 jump = False
 y_change = 0
 x_change = 0
 player_speed = 7
 
 # Update Players Y-Position
-
 def update_player(y_pos):
 	global jump
 	global y_change
@@ -62,7 +59,6 @@ def update_player(y_pos):
 	return y_pos
 
 # Check for Collisions
-
 def check_collisions(rect_list, j):
 	global player_x
 	global player_y
@@ -73,7 +69,6 @@ def check_collisions(rect_list, j):
 	return j
 
 # Handle Platform Movement
-
 def update_platforms(platform_list, pos, change):
 	if pos < 400 and change < 0:
 		for i in range(len(platform_list)):
@@ -90,7 +85,6 @@ def update_platforms(platform_list, pos, change):
 
 
 # Run Game
-
 running = True
 while running == True:
 
@@ -124,11 +118,10 @@ while running == True:
 	platforms = update_platforms(platforms, player_y, y_change)
 
 	if x_change > 0:
-		player = pygame.transform.scale(pygame.image.load('worby.png'), (96, 96))
+		player = pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (96, 96))
 	elif x_change < 0:
-		player = pygame.transform.flip(pygame.transform.scale(pygame.image.load('worby.png'), (96, 96)), 1, 0)
+		player = pygame.transform.flip(pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (96, 96)), 1, 0)
 
 	pygame.display.update()
-
 
 pygame.quit()
