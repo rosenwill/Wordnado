@@ -92,40 +92,64 @@ def update_platforms(platform_list, pos, change):
 # Run Game
 running = True
 while running == True:
+	while True:
+		timer.tick(fps)
+		screen.blit(bg_img, (0, 0))
+		screen.blit(player, (player_x, player_y))
+		blocks = []
 
-	timer.tick(fps)
-	screen.blit(bg_img, (0, 0))
-	screen.blit(player, (player_x, player_y))
-	blocks = []
+		# End Screen Set-Up
+		endText = pygame.font.Font('freesansbold.ttf', 32).render('Game over', True, black)
+		border = pygame.Rect(0, 0, (WIDTH // 3) * 2, (HEIGHT // 3))
+		endTextRect = endText.get_rect()
+		border.center = (WIDTH / 2, HEIGHT / 2)
+		endTextRect.center = border.center
 
-	for i in range(len(platforms)):
-		block = pygame.draw.rect(screen, black, platforms[i], 0, 15)
-		screen.blit(platform, (block.x, block.y - 35)) # Ties platform hitboxes to platform image
-		blocks.append(block)
+		for i in range(len(platforms)):
+			block = pygame.draw.rect(screen, black, platforms[i], 0, 15)
+			screen.blit(platform, (block.x, block.y - 35)) # Ties platform hitboxes to platform image
+			blocks.append(block)
 
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			running = False
-		if event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-				x_change = -player_speed
-			if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-				x_change = player_speed
-		if event.type == pygame.KEYUP:
-			if event.key == pygame.K_a or event.key == pygame.K_LEFT:
-				x_change = 0
-			if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
-				x_change = 0
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				running = False
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+					x_change = -player_speed
+				if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+					x_change = player_speed
+			if event.type == pygame.KEYUP:
+				if event.key == pygame.K_a or event.key == pygame.K_LEFT:
+					x_change = 0
+				if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+					x_change = 0
 
-	player_y = update_player(player_y)
-	player_x += x_change
-	jump = check_collisions(blocks, jump)
-	platforms = update_platforms(platforms, player_y, y_change)
+		player_y = update_player(player_y)
+		player_x += x_change
+		jump = check_collisions(blocks, jump)
+		platforms = update_platforms(platforms, player_y, y_change)
 
-	if x_change > 0:
-		player = pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (96, 96))
-	elif x_change < 0:
-		player = pygame.transform.flip(pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (96, 96)), 1, 0)
+		if x_change > 0:
+			player = pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (96, 96))
+		elif x_change < 0:
+			player = pygame.transform.flip(pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (96, 96)), 1, 0)
+
+		if player_y > 900:
+			break
+
+		pygame.display.update()
+	
+	# Replay screen	
+	pygame.draw.rect(screen, white, border)
+	screen.blit(endText, endTextRect)
+
+	# Add button to retry level
+	'''
+	if button_is_pressed:
+		continue
+	else:
+		break
+	'''
 
 	pygame.display.update()
 
