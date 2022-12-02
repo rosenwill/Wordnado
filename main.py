@@ -99,11 +99,12 @@ while running == True:
 		blocks = []
 
 		# End Screen Set-Up
-		endText = pygame.font.Font('freesansbold.ttf', 32).render('Game over', True, black)
+		endText = pygame.font.Font('freesansbold.ttf', 32).render('Game over', True, (174, 201, 220))
 		border = pygame.Rect(0, 0, (WIDTH // 3) * 2, (HEIGHT // 3))
 		endTextRect = endText.get_rect()
 		border.center = (WIDTH / 2, HEIGHT / 2)
 		endTextRect.center = border.center
+		# endTextRect.y = endTextRect.y - 50
 
 		for i in range(len(platforms)):
 			block = pygame.draw.rect(screen, black, platforms[i], 0, 15)
@@ -140,7 +141,8 @@ while running == True:
 		pygame.display.update()
 	
 	# Replay screen	
-	pygame.draw.rect(screen, white, border)
+	pygame.draw.rect(screen, (90, 108, 122), border)
+	pygame.draw.rect(screen, (43, 50, 54), border, 5)
 	screen.blit(endText, endTextRect)
 
 	# Add button to retry level
