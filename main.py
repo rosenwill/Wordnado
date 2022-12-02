@@ -60,18 +60,15 @@ def show_score(x,y):
 def create_letter():
 	letter = random.sample(string.ascii_letters)
 
-# Time Limit/clock
+# Time Limit / Clock
 clock = pygame.time.Clock()
-time_limit = 30
 start_time = time.time()
 timeX = WIDTH - 100
 timeY = 50
 
-counter, text = 10, '10'.rjust(3)
+counter = 30
 pygame.time.set_timer(pygame.USEREVENT, 30)
 font = pygame.font.Font('freesansbold.ttf', 28)
-
-
 
 # Update Players Y-Position
 def update_player(y_pos):
@@ -146,13 +143,13 @@ while running == True:
 			if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
 				x_change = 0
 		if event.type == pygame.USEREVENT: # timer
-			counter -= 1
-			text = str(counter).rjust(3) if counter > 0 else 'Level Time Up!'
+			counter -= 0.03
 
 	#display timer
-	screen.blit(font.render(str(counter), True, (255, 255, 255)), (timeX, timeY))
+	screen.blit(font.render(str(round(counter)), True, (255, 255, 255)), (timeX, timeY))
 	pygame.display.flip()
-	clock.tick(30)
+	if counter < 0:
+		break
 
 	player_y = update_player(player_y)
 	player_x += x_change
