@@ -1,5 +1,5 @@
 # Wordnado Current Development
-# Last Edit 11/28/2022 2:47PM
+# Last Edit 12/06/2022 2:04PM
 
 import pygame, sys, random
 from pygame.locals import *
@@ -51,10 +51,6 @@ score_value = 0
 font = pygame.font.Font('freesansbold.ttf', 32)
 scoreX = 10
 scoreY = 10
-
-def show_score(x,y):
-	score = font.render("Score: " + str(score_value), True, white)
-	screen.blit(score, (x,y))
 
 #Random letters
 def create_letter():
@@ -117,7 +113,7 @@ def update_platforms(platform_list, pos, change):
 
 # Run Game
 running = True
-while running == True:
+while running:
 	while True:
 		timer.tick(fps)
 		screen.blit(bg_img, (0, 0))
@@ -151,13 +147,17 @@ while running == True:
 				if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
 					x_change = 0
 			if event.type == pygame.USEREVENT: # timer
-				counter -= 0.03
+				counter -= fps / 2000
 
-		#display timer
-		screen.blit(font.render(str(round(counter)), True, (255, 255, 255)), (timeX, timeY))
+		# Display timer
+		screen.blit(font.render("0" if counter <= 0 else str(round(counter)), True, (255, 255, 255)), (timeX, timeY))
 		pygame.display.flip()
 		if counter < 0:
 			break
+
+		# Display score
+		screen.blit(font.render("Score: " + str(score_value), True, white), (scoreX, scoreY))
+		pygame.display.flip()
 
 		player_y = update_player(player_y)
 		player_x += x_change
@@ -169,25 +169,25 @@ while running == True:
 		elif x_change < 0:
 			player = pygame.transform.flip(pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (96, 96)), 1, 0)
 
-		if player_y > 900:
+		if player_y > HEIGHT:
 			break
 
 		pygame.display.update()
 	
-	# Replay screen	
-	pygame.draw.rect(screen, (90, 108, 122), border)
-	pygame.draw.rect(screen, (43, 50, 54), border, 5)
-	screen.blit(endText, endTextRect)
+	while True:
+		# Replay screen	
+		pygame.draw.rect(screen, (90, 108, 122), border)
+		pygame.draw.rect(screen, (43, 50, 54), border, 5)
+		screen.blit(endText, endTextRect)
 
-	# Add button to retry level
-	'''
-	if button_is_pressed:
-		continue
-	else:
-		break
-	'''
+		# Add button to retry level
+		'''
+		if button_is_pressed:
+			continue
+		else:
+			break
+		'''
 
-	show_score(scoreX, scoreY)
-	pygame.display.update()
+		pygame.display.update()
 
 pygame.quit()
