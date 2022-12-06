@@ -3,6 +3,8 @@
 
 import pygame, sys, random
 from pygame.locals import *
+import string
+import time
 
 pygame.init()
 
@@ -43,6 +45,30 @@ jump = False
 y_change = 0
 x_change = 0
 player_speed = 7
+
+#Score
+score_value = 0
+font = pygame.font.Font('freesansbold.ttf', 32)
+scoreX = 10
+scoreY = 10
+
+def show_score(x,y):
+	score = font.render("Score: " + str(score_value), True, white)
+	screen.blit(score, (x,y))
+
+#Random letters
+def create_letter():
+	letter = random.sample(string.ascii_letters)
+
+# Time Limit / Clock
+clock = pygame.time.Clock()
+start_time = time.time()
+timeX = WIDTH - 100
+timeY = 50
+
+counter = 30
+pygame.time.set_timer(pygame.USEREVENT, 30)
+font = pygame.font.Font('freesansbold.ttf', 28)
 
 # Update Players Y-Position
 def update_player(y_pos):
@@ -124,6 +150,14 @@ while running == True:
 					x_change = 0
 				if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
 					x_change = 0
+			if event.type == pygame.USEREVENT: # timer
+				counter -= 0.03
+
+		#display timer
+		screen.blit(font.render(str(round(counter)), True, (255, 255, 255)), (timeX, timeY))
+		pygame.display.flip()
+		if counter < 0:
+			break
 
 		player_y = update_player(player_y)
 		player_x += x_change
@@ -153,6 +187,7 @@ while running == True:
 		break
 	'''
 
+	show_score(scoreX, scoreY)
 	pygame.display.update()
 
 pygame.quit()
