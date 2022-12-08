@@ -122,12 +122,19 @@ while running:
 		blocks = []
 
 		# End Screen Set-Up
-		endText = pygame.font.Font('freesansbold.ttf', 32).render('Game over', True, (174, 201, 220))
+		endText = pygame.font.Font('freesansbold.ttf', 60).render('Level Over', True, (174, 201, 220))
+		retry1Text = pygame.font.Font('freesansbold.ttf', 20).render('Press the R key to restart', True, (174, 201, 220))
+		retry2Text = pygame.font.Font('freesansbold.ttf', 20).render('or press Enter to exit the level', True, (174, 201, 220))
 		border = pygame.Rect(0, 0, (WIDTH // 3) * 2, (HEIGHT // 3))
-		endTextRect = endText.get_rect()
 		border.center = (WIDTH / 2, HEIGHT / 2)
+
+		endTextRect = endText.get_rect()
 		endTextRect.center = border.center
-		# endTextRect.y = endTextRect.y - 50
+		endTextRect.y = endTextRect.y - 25
+
+		retry1TextRect, retry2TextRect = retry1Text.get_rect(), retry2Text.get_rect()
+		retry1TextRect.center = retry2TextRect.center = border.center
+		retry1TextRect.y, retry2TextRect.y = retry1TextRect.y + 25, retry2TextRect.y + 50
 
 		for i in range(len(platforms)):
 			block = pygame.draw.rect(screen, black, platforms[i], 0, 15)
@@ -180,6 +187,8 @@ while running:
 		pygame.draw.rect(screen, (90, 108, 122), border)
 		pygame.draw.rect(screen, (43, 50, 54), border, 5)
 		screen.blit(endText, endTextRect)
+		screen.blit(retry1Text, retry1TextRect)
+		screen.blit(retry2Text, retry2TextRect)
 
 		# Add button to retry level
 		for event in pygame.event.get():
@@ -196,7 +205,8 @@ while running:
 						[375, 290, 160, 12],
 						[230, 90, 160, 12]
 					]
-				else:
+				elif event.key == pygame.K_RETURN:
+					exit = True
 					running = False
 
 		pygame.display.update()
