@@ -114,6 +114,7 @@ def update_platforms(platform_list, pos, change):
 # Run Game
 running = True
 while running:
+	exit = False
 	while True:
 		timer.tick(fps)
 		screen.blit(bg_img, (0, 0))
@@ -174,19 +175,29 @@ while running:
 
 		pygame.display.update()
 	
-	while True:
+	while not exit:
 		# Replay screen	
 		pygame.draw.rect(screen, (90, 108, 122), border)
 		pygame.draw.rect(screen, (43, 50, 54), border, 5)
 		screen.blit(endText, endTextRect)
 
 		# Add button to retry level
-		'''
-		if button_is_pressed:
-			continue
-		else:
-			break
-		'''
+		for event in pygame.event.get():
+			if event.type == pygame.KEYDOWN:
+				if event.key == K_r:
+					exit = True
+					player_x = 260
+					player_y = 720
+					counter = 30
+					platforms = [ # [x, y, width, height] of hitboxes
+						[250, 850, 160, 12],
+						[410, 610, 160, 12],
+						[120, 430, 160, 12],
+						[375, 290, 160, 12],
+						[230, 90, 160, 12]
+					]
+				else:
+					running = False
 
 		pygame.display.update()
 
