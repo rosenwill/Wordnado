@@ -1,5 +1,4 @@
-# Wordnado Current Development
-# Last Edit 12/06/2022 2:04PM
+# Wordnado: Eye Escape
 
 import pygame, sys, random
 from pygame.locals import *
@@ -46,23 +45,22 @@ y_change = 0
 x_change = 0
 player_speed = 7
 
-#Score
+# Score
 score_value = 0
 font = pygame.font.Font('freesansbold.ttf', 32)
 scoreX = 10
 scoreY = 10
 
-#Random letters
+# Random letters
 def create_letter():
 	letter = random.sample(string.ascii_letters)
 
 # Time Limit / Clock
 clock = pygame.time.Clock()
 start_time = time.time()
-timeX = WIDTH - 100
-timeY = 50
-
 counter = 30
+timeX = WIDTH - 50
+timeY = 10
 pygame.time.set_timer(pygame.USEREVENT, 30)
 font = pygame.font.Font('freesansbold.ttf', 28)
 
@@ -121,26 +119,26 @@ while running:
 		screen.blit(player, (player_x, player_y))
 		blocks = []
 
-		# End Screen Set-Up
+		# Level Over Screen Set-Up
 		endText = pygame.font.Font('freesansbold.ttf', 60).render('Level Over', True, (174, 201, 220))
 		retry1Text = pygame.font.Font('freesansbold.ttf', 20).render('Press the R key to restart', True, (174, 201, 220))
 		retry2Text = pygame.font.Font('freesansbold.ttf', 20).render('or press Enter to exit the level', True, (174, 201, 220))
 		border = pygame.Rect(0, 0, (WIDTH // 3) * 2, (HEIGHT // 3))
 		border.center = (WIDTH / 2, HEIGHT / 2)
-
 		endTextRect = endText.get_rect()
 		endTextRect.center = border.center
-		endTextRect.y = endTextRect.y - 25
-
+		endTextRect.y = endTextRect.y - 30
 		retry1TextRect, retry2TextRect = retry1Text.get_rect(), retry2Text.get_rect()
 		retry1TextRect.center = retry2TextRect.center = border.center
-		retry1TextRect.y, retry2TextRect.y = retry1TextRect.y + 25, retry2TextRect.y + 50
+		retry1TextRect.y, retry2TextRect.y = retry1TextRect.y + 20, retry2TextRect.y + 45
 
+		# Draw cloud platforms
 		for i in range(len(platforms)):
 			block = pygame.draw.rect(screen, black, platforms[i], 0, 15)
 			screen.blit(platform, (block.x, block.y - 35)) # Ties platform hitboxes to platform image
 			blocks.append(block)
 
+		# Check for user input
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				running = False
@@ -157,15 +155,14 @@ while running:
 			if event.type == pygame.USEREVENT: # timer
 				counter -= fps / 2000
 
+		# Display score
+		screen.blit(font.render("Score: " + str(score_value), True, white), (scoreX, scoreY))
+
 		# Display timer
-		screen.blit(font.render("0" if counter <= 0 else str(round(counter)), True, (255, 255, 255)), (timeX, timeY))
+		screen.blit(font.render("0" if counter <= 0 else str(round(counter)), True, white), (timeX if counter >= 9.5 else timeX + 20, timeY))
 		pygame.display.flip()
 		if counter < 0:
 			break
-
-		# Display score
-		screen.blit(font.render("Score: " + str(score_value), True, white), (scoreX, scoreY))
-		pygame.display.flip()
 
 		player_y = update_player(player_y)
 		player_x += x_change
@@ -190,22 +187,23 @@ while running:
 		screen.blit(retry1Text, retry1TextRect)
 		screen.blit(retry2Text, retry2TextRect)
 
-		# Add button to retry level
+		# Retry options -> R key and Enter key
 		for event in pygame.event.get():
 			if event.type == pygame.KEYDOWN:
-				if event.key == K_r:
+				if event.key == K_r: # R Key = Restart level
 					exit = True
 					player_x = 260
 					player_y = 720
+					timeX = WIDTH - 50
 					counter = 30
-					platforms = [ # [x, y, width, height] of hitboxes
+					platforms = [
 						[250, 850, 160, 12],
 						[410, 610, 160, 12],
 						[120, 430, 160, 12],
 						[375, 290, 160, 12],
 						[230, 90, 160, 12]
 					]
-				elif event.key == pygame.K_RETURN:
+				elif event.key == pygame.K_RETURN: # Enter Key = Exit level
 					exit = True
 					running = False
 
