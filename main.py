@@ -1,5 +1,4 @@
 # Wordnado Current Development
-# Last Edit 11/27/2022
 
 import pygame, sys, random
 from pygame.locals import *
@@ -16,14 +15,14 @@ gray = (128, 128, 128)
 WIDTH = 400 #600
 HEIGHT = 600 #900
 
-player = pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (64, 64))
+player = pygame.transform.scale(pygame.image.load('Images/Sprites/reggie.png'), (64, 64))
 
-bg_img = pygame.image.load('Images/Backgrounds/theBackground.jpg')
+bg_img = pygame.image.load('Images/Backgrounds/tornado.jpg')
 fps = 60
 timer = pygame.time.Clock()
 
 
-platform = pygame.image.load('Images/Elements/newCloud.png')
+platform = pygame.image.load('Images/Elements/cloud2.png')
 platform = pygame.transform.scale(platform, (140, 60))
 
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
@@ -33,9 +32,9 @@ pygame.display.set_caption('Wordnado')
 # Music Variables
 
 pygame.mixer.init()
-pygame.mixer.music.load("theMusic.mp3")
+pygame.mixer.music.load("Sounds/music.mp3")
 pygame.mixer.music.set_volume(0.7)
-jump_sound = pygame.mixer.Sound("jumpSound.mp3")
+jump_sound = pygame.mixer.Sound("Sounds/jumpSound.mp3")
 
 
 # Game Variables
@@ -197,9 +196,9 @@ while running == True:
 		platforms = update_platforms(platforms, player_y, y_change)
 
 		if x_change > 0:
-			player = pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (64, 64))
+			player = pygame.transform.scale(pygame.image.load('Images/Sprites/reggie.png'), (64, 64))
 		elif x_change < 0:
-			player = pygame.transform.flip(pygame.transform.scale(pygame.image.load('Images/Sprites/worby.png'), (64, 64)), 1, 0)
+			player = pygame.transform.flip(pygame.transform.scale(pygame.image.load('Images/Sprites/reggie.png'), (64, 64)), 1, 0)
 
 		if player_y > HEIGHT:
 			break
