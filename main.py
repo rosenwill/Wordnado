@@ -225,6 +225,7 @@ while running == True:
 			if event.type == pygame.KEYDOWN:
 				if event.key == K_r: # R Key = Restart level
 					exit = True
+					# Reset changed values to default values
 					player_x = 175
 					player_y = 420
 					timeX = WIDTH - 50
