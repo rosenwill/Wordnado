@@ -45,12 +45,14 @@ platforms = [
 	[145, 500, 105, 15],
 	[40,  300, 105, 15],
 	[285, 100, 105, 15],
+	[105, 200, 105, 15]
 ]
 
 condition = {
 	0: False,
 	1: False,
 	2: False,
+	3: False,
 }
 
 jump = False
