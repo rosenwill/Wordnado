@@ -2,7 +2,7 @@
 
 import pygame, sys, random
 from pygame.locals import *
-import string,time
+import string, time
 
 pygame.init()
 
@@ -55,6 +55,13 @@ condition = {
 	3: False,
 }
 
+letter_holding = [
+	None,
+	None,
+	None,
+	None,
+]
+
 jump = False
 y_change = 0
 x_change = 0
@@ -100,6 +107,13 @@ font = pygame.font.Font('freesansbold.ttf', 24)
 scoreX = 8
 scoreY = 8
 
+# Letters
+collected_letters = []
+num_collected = 0
+letter_font = pygame.font.Font('freesansbold.ttf', 36)
+collectX = 8
+collectY = 40
+
 # Random letters
 def create_letter():
 	letter = random.sample(string.ascii_uppercase)
@@ -128,10 +142,18 @@ def update_platforms(platform_list, pos, change):
 		if platform_list[item][1] > 600:
 			condition[item] = False
 			platform_list[item] = [random.randint(5, 300), 0, 105, 15]
-			if random.randint(0, 100) < 25:
+			if random.randint(0, 100) < 40:
 				condition[item] = True
+				letter_holding[item] = random.choice(string.ascii_uppercase)
+					
 	return platform_list
 
+def display_text(text, x, y, font, color):
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    text_rect.x = x
+    text_rect.y = y
+    screen.blit(text_surface, text_rect)
 
 # Run Game
 
@@ -161,6 +183,18 @@ while running == True:
 		for i in range(len(platforms)):
 			block = pygame.draw.rect(screen, black, platforms[i], 0, 15)
 			screen.blit(platform, (block.x - 17, block.y - 25))
+			if condition[i] == True: # Letter 
+				letter_text = letter_font.render(letter_holding[i], True, (255, 255, 255))
+				screen.blit(letter_text, (block.x + 52.5 - letter_text.get_width()/2, block.y - 60))
+
+				if letter_text:
+					if player_x < block.x + 105 and player_x + 64 > block.x:
+						if player_y < block.y + 15 and player_y + 64 > block.y:
+							collected_letters.append(letter_holding[i])
+							num_collected += 1
+							score_value += 10
+							condition[i] = False
+
 			blocks.append(block)
 
 		for event in pygame.event.get():
@@ -185,6 +219,7 @@ while running == True:
 
 		# Display score
 		screen.blit(font.render("Score: " + str(score_value), True, white), (scoreX, scoreY))
+		screen.blit(font.render("Collected: " + str(num_collected), True, white), (collectX, collectY))
 
 		# Display timer
 		screen.blit(font.render("0" if counter <= 0 else str(round(counter)), True, white), (timeX if counter >= 9.5 else timeX + 20, timeY))
@@ -212,6 +247,54 @@ while running == True:
 		pygame.display.update()
 
 	while not exit:
+
+		while True:
+			collected_letters_copy = collected_letters.copy() # create a copy of the collected letters
+			word_input = ""
+			word_input_rect = pygame.Rect(WIDTH/4, HEIGHT/2, WIDTH/2, 30)
+			start_time = time.time() # reset the start time
+			while True:
+				for event in pygame.event.get():
+					if event.type == pygame.QUIT:
+						exit = True
+						break
+					if event.type == pygame.KEYDOWN:
+						if event.unicode.isalnum() and len(word_input) < 7:
+							word_input += event.unicode.upper() # convert input to uppercase
+						elif event.key == K_BACKSPACE:
+							word_input = word_input[:-1]
+						elif event.key == K_RETURN:
+							if len(word_input) < 2 or len(word_input) > 7:
+								print("Invalid word length. Please enter a word between 2 and 7 letters.")
+								continue
+							if all(letter in collected_letters_copy for letter in word_input):
+								for letter in word_input:
+									collected_letters_copy.remove(letter) # remove used letters from the copy
+								score_value += (len(word_input) * 100) # award points based on word length
+								print("Congratulations! You've earned {} points for the word '{}'".format(len(word_input) * 100, word_input))
+								break
+							else:
+								print("Invalid word. Please use only letters from your collected letters.")
+				if time.time() - start_time > 45: # check if time limit has been exceeded
+					print("Time's up! You ran out of time.")
+					break
+				screen.blit(bg_img, (0, 0)) # keep the tornado background
+				pygame.draw.rect(screen, (0, 0, 0), word_input_rect, 2)
+				word_input_image = font.render(word_input, True, (0, 0, 0))
+				screen.blit(word_input_image, (word_input_rect.x + 5, word_input_rect.y + 5))
+				# Display Letters
+				letters = ', '.join(collected_letters_copy)
+				letters_image = font.render(letters, True, (0, 0, 0))
+				letters_image_rect = letters_image.get_rect()
+				letters_image_rect.center = (WIDTH/2, HEIGHT/2 + 60)
+				screen.blit(letters_image, letters_image_rect)
+				# Display Time
+				time_remaining = 45 - (time.time() - start_time)
+				time_text = str(time_remaining)
+				time_image = font.render(time_text, True, (255, 255, 255))
+				screen.blit(time_image, (timeX - 25, timeY))
+				pygame.display.update()
+
 		# Replay screen
 		inputMap = [False, False]
 		pygame.draw.rect(screen, (90, 108, 122), border)
@@ -228,10 +311,14 @@ while running == True:
 				if event.key == K_r: # R Key = Restart level
 					exit = True
 					# Reset changed values to default values
+					collected_letters = []
+					num_collected = 0
+					score_value = 0
 					player_x = 175
 					player_y = 420
 					timeX = WIDTH - 50
 					counter = 45
+					game_over = False
 					platforms = [
 						[145, 500, 105, 15],
 						[40,  300, 105, 15],
